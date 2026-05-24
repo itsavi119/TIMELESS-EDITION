@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Timeless Edition</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    background: #fff; color: #1a1a1a; font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Marquee */
+  .marquee-bar {
+    background: #1a1a1a;
+    overflow: hidden;
+    white-space: nowrap;
+    padding: 10px 0;
+  }
+  .marquee-track {
+    display: inline-block;
+    animation: marquee 25s linear infinite;
+  }
+  .marquee-track span {
+    font-size: 13px;
+    color: #fff;
+    font-weight: 500;
+    letter-spacing: 0.3px;
+    padding: 0 12px;
+  }
+  @keyframes marquee {
+    0%   { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  .announcement-bar {
+    background: #fff; border-bottom: 1px solid #e8e8e8;
+    text-align: center; padding: 10px 16px; font-size: 13px; color: #1a1a1a;
+  }
+
+  .header {
+    background: #fff; border-bottom: 1px solid #e8e8e8;
+    display: flex; align-items: center; padding: 0 16px;
+    height: 60px; position: sticky; top: 0; z-index: 50;
+  }
+  .header-left  { display: flex; align-items: center; gap: 16px; flex: 1; }
+  .header-right { display: flex; align-items: center; gap: 12px; flex: 1; justify-content: flex-end; }
+
+  .icon-btn {
+    background: none; border: none; cursor: pointer;
+    padding: 6px; display: flex; align-items: center; justify-content: center; color: #1a1a1a;
+  }
+  .icon-hamburger { width: 20px; height: 14px; display: flex; flex-direction: column; justify-content: space-between; }
+  .icon-hamburger span { display: block; height: 2px; background: #1a1a1a; border-radius: 1px; }
+
+  .brand-name {
+    font-size: 18px; font-weight: 700; color: #1a1a1a;
+    text-align: center; flex: 1; white-space: nowrap; cursor: pointer;
+  }
+
+  /* Cart icon wrapper */
+  .cart-btn { position: relative; background: none; border: none; cursor: pointer; padding: 6px; display: flex; align-items: center; color: #1a1a1a; }
+  .cart-badge {
+    position: absolute; top: 0; right: 0;
+    background: #1a1a1a; color: #fff; border-radius: 50%;
+    font-size: 10px; font-weight: 700;
+    width: 16px; height: 16px; display: none;
+    align-items: center; justify-content: center; line-height: 1;
+  }
+
+  .page { max-width: 768px; margin: 0 auto; padding: 0 12px; }
+
+  .products-heading {
+    font-size: 28px; font-weight: 700; color: #1a1a1a;
+    padding: 28px 0 20px; letter-spacing: -0.3px;
+  }
+
+  .product-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 12px; padding-bottom: 48px;
+  }
+
+  .product-card { cursor: pointer; text-decoration: none; color: inherit; display: block; }
+  .product-image-wrap { width: 100%; aspect-ratio: 3/4; overflow: hidden; background: #f2f2f2; position: relative; }
+  .product-label { padding: 8px 0 2px; font-size: 14px; color: #1a1a1a; line-height: 1.35; }
+  .product-price { font-size: 14px; color: #1a1a1a; padding-bottom: 4px; }
+
+  /* Full-screen pages */
+  #product-page, #cart-page, #checkout-page {
+    display: none; position: fixed; inset: 0;
+    background: #fff; z-index: 100; overflow-y: auto; -webkit-overflow-scrolling: touch;
+  }
+
+  .thumb-main-wrap {
+    width: 100%; aspect-ratio: 3/4; overflow: hidden;
+    background: #f2f2f2; border-radius: 14px; margin-bottom: 20px;
+    position: relative; padding: 10px;
+  }
+  .thumb-main-wrap img, .thumb-main-wrap svg { width: 100%; height: 100%; object-fit: cover; display: block; border-radius: 8px; }
+
+  .thumb-play-btn {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(0,0,0,0.15);
+  }
+  .thumb-play-circle {
+    width: 64px; height: 64px; border-radius: 50%;
+    background: rgba(255,255,255,0.92);
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+  }
+  .thumb-play-circle svg { margin-left: 4px; }
+
+  .page-btn {
+    flex: 1; padding: 14px 0;
+    border: 1.5px solid #e0e0e0; background: #fff;
+    border-radius: 12px; font-size: 15px; font-weight: 500;
+    cursor: pointer; color: #1a1a1a;
+    transition: background 0.15s, border-color 0.15s, color 0.15s;
+  }
+  .page-btn.selected { background: #1a1a1a; color: #fff; border-color: #1a1a1a; }
+
+  /* Cart items */
+  .cart-item {
+    display: flex; gap: 12px; padding: 16px 0;
+    border-bottom: 1px solid #f0f0f0; align-items: flex-start;
+  }
+  .cart-item-img {
+    width: 72px; height: 96px; object-fit: cover;
+    border-radius: 8px; background: #f2f2f2; flex-shrink: 0;
+  }
+  .cart-item-info { flex: 1; }
+  .cart-item-title { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+  .cart-item-sub { font-size: 13px; color: #555; margin-bottom: 8px; }
+  .cart-item-price { font-size: 14px; font-weight: 700; }
+  .cart-item-remove { background: none; border: none; cursor: pointer; color: #999; font-size: 18px; padding: 4px; }
+
+  /* Qty controls in cart */
+  .qty-ctrl { display: flex; align-items: center; gap: 0; border: 1.5px solid #e0e0e0; border-radius: 10px; overflow: hidden; width: fit-content; margin-top: 8px; }
+  .qty-ctrl button { background: #fff; border: none; padding: 6px 12px; font-size: 18px; cursor: pointer; color: #1a1a1a; line-height: 1; }
+  .qty-ctrl span { font-size: 14px; font-weight: 600; min-width: 24px; text-align: center; }
+
+  /* Checkout form */
+  .form-group { margin-bottom: 18px; }
+  .form-group label { display: block; font-size: 13px; font-weight: 600; color: #555; margin-bottom: 6px; }
+  .form-group input, .form-group textarea {
+    width: 100%; border: 1.5px solid #e0e0e0; border-radius: 12px;
+    padding: 12px 14px; font-size: 15px; color: #1a1a1a;
+    background: #fff; outline: none; font-family: inherit;
+  }
+  .form-group input:focus, .form-group textarea:focus { border-color: #1a1a1a; }
+  .form-group textarea { min-height: 80px; resize: vertical; }
+
+  .sticky-back {
+    position: sticky; top: 0; z-index: 10; background: #fff;
+    border-bottom: 1px solid #f0f0f0;
+    display: flex; align-items: center; padding: 14px 16px 10px; gap: 10px;
+  }
+  .back-btn {
+    background: none; border: none; padding: 4px; cursor: pointer;
+    display: flex; align-items: center; gap: 6px; color: #1a1a1a; font-size: 15px;
+  }
+
+  .primary-btn {
+    width: 100%; background: #1a1a1a; color: #fff; border: none;
+    border-radius: 14px; font-size: 15px; font-weight: 700;
+    padding: 15px; cursor: pointer; margin-bottom: 12px;
+  }
+  .primary-btn:disabled { background: #ccc; cursor: not-allowed; }
+</style>
+</head>
+<body>
+
+<!-- Menu Overlay -->
+<div id="menu-overlay" onclick="closeMenu()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:200;"></div>
+
+<!-- Side Drawer -->
+<div id="side-menu" style="display:none;position:fixed;top:0;left:0;width:260px;height:100%;background:#fff;z-index:201;padding:0;box-shadow:4px 0 20px rgba(0,0,0,0.12);overflow-y:auto;">
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:18px 16px;border-bottom:1px solid #e8e8e8;">
+    <span style="font-size:17px;font-weight:700;color:#1a1a1a;">Menu</span>
+    <button onclick="closeMenu()" style="background:none;border:none;cursor:pointer;font-size:22px;color:#1a1a1a;line-height:1;">&#x2715;</button>
+  </div>
+  <nav>
+    <a href="#" onclick="event.preventDefault();closeMenu();setTimeout(()=>openCategory('magazines'),50)" style="display:block;padding:16px 20px;font-size:15px;color:#1a1a1a;text-decoration:none;border-bottom:1px solid #f0f0f0;">Magazines</a>
+    <a href="#" onclick="event.preventDefault();closeMenu();setTimeout(()=>openCategory('crochet'),50)" style="display:block;padding:16px 20px;font-size:15px;color:#1a1a1a;text-decoration:none;border-bottom:1px solid #f0f0f0;">Crochet</a>
+    <a href="#" onclick="event.preventDefault();closeMenu()" style="display:block;padding:16px 20px;font-size:15px;color:#1a1a1a;text-decoration:none;border-bottom:1px solid #f0f0f0;">About</a>
+  </nav>
+</div>
+
+<!-- Marquee Bar -->
+<div class="marquee-bar">
+  <div class="marquee-track">
+    <span>✦ Free Shipping Above Order ₹699</span>
+    <span>✦ Estimated Delivery 5–7 Working Days</span>
+    <span>✦ 5K+ Happy Customers</span>
+    <span>✦ Unique Personalized Gifts</span>
+    <span>✦ Free Shipping Above Order ₹699</span>
+    <span>✦ Estimated Delivery 5–7 Working Days</span>
+    <span>✦ 5K+ Happy Customers</span>
+    <span>✦ Unique Personalized Gifts</span>
+  </div>
+</div>
+
+<!-- Announcement Bar -->
+<div class="announcement-bar">create your own custom magazine</div>
+
+<!-- Header -->
+<header class="header">
+  <div class="header-left">
+    <button class="icon-btn" aria-label="Menu" onclick="openMenu()">
+      <div class="icon-hamburger"><span></span><span></span><span></span></div>
+    </button>
+  </div>
+  <div class="brand-name" onclick="goHome()">Timeless Edition</div>
+  <div class="header-right">
+    <!-- Cart Icon -->
+    <button class="cart-btn" onclick="openCart()" aria-label="Cart">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
+        <line x1="3" y1="6" x2="21" y2="6"/>
+        <path d="M16 10a4 4 0 01-8 0"/>
+      </svg>
+      <span class="cart-badge" id="cart-badge">0</span>
+    </button>
+    </div>
+</header>
+
+<!-- ── HOME PAGE ── -->
+<div id="main-page">
+  <div class="page">
+    <div class="products-heading">Products</div>
+    <div class="product-grid" style="padding-bottom:48px;">
+      <a class="product-card" href="#" onclick="event.preventDefault();openCategory('magazines')">
+        <div class="product-image-wrap">
+          <img src="magazine_cover.jpg" alt="Magazines" style="width:100%;height:100%;object-fit:cover;display:block;">
+        </div>
+        <div class="product-label">Magazines</div>
+        <div class="product-price">Starting Rs. 399.00</div>
+      </a>
+      <a class="product-card" href="#" onclick="event.preventDefault();openCategory('crochet')">
+        <div class="product-image-wrap">
+          <img src="crochet_cover.jpg" alt="Crochet" style="width:100%;height:100%;object-fit:cover;display:block;">
+        </div>
+        <div class="product-label">Crochet</div>
+        <div class="product-price">Coming Soon</div>
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- ── CATEGORY PAGE ── -->
+<div id="category-page" style="display:none;">
+  <div class="sticky-back">
+    <button class="back-btn" onclick="closeCategory()">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+    </button>
+    <span id="category-title" style="font-size:17px;font-weight:700;color:#1a1a1a;"></span>
+  </div>
+  <div class="page">
+    <div class="product-grid" id="category-grid" style="padding-top:20px;padding-bottom:48px;"></div>
+  </div>
+</div>
+
+<!-- ── PRODUCT PAGE ── -->
+<div id="product-page">
+  <div class="sticky-back">
+    <button class="back-btn" onclick="closePage()">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+      <span style="font-size:13px;font-weight:600;letter-spacing:0.3px;">Back</span>
+    </button>
+    <button class="cart-btn" onclick="openCart()" aria-label="Cart" style="margin-left:auto;">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+      <span class="cart-badge" id="cart-badge-product">0</span>
+    </button>
+  </div>
+
+  <div style="padding:16px 16px 0;">
+    <div class="thumb-main-wrap" id="thumb-main" style="margin-bottom:12px;"></div>
+  </div>
+
+  <div style="padding:0 16px 32px;">
+    <div id="popup-title" style="font-size:26px;font-weight:700;line-height:1.25;margin-bottom:10px;color:#1a1a1a;"></div>
+    <div id="price-display" style="font-size:16px;color:#1a1a1a;margin-bottom:20px;">Rs. 399.00</div>
+
+    <hr style="border:none;border-top:1px solid #e8e8e8;margin-bottom:20px;">
+
+    <div style="font-size:14px;color:#1a1a1a;margin-bottom:12px;">Number of Pages</div>
+    <div style="display:flex;gap:10px;margin-bottom:24px;">
+      <button onclick="selectPages(this,8)"  class="page-btn selected">8</button>
+      <button onclick="selectPages(this,12)" class="page-btn">12</button>
+      <button onclick="selectPages(this,16)" class="page-btn">16</button>
+      <button onclick="selectPages(this,20)" class="page-btn">20</button>
+    </div>
+
+    <div style="display:flex;gap:10px;margin-bottom:12px;align-items:stretch;">
+      <div style="display:flex;align-items:center;border:1.5px solid #e0e0e0;border-radius:14px;overflow:hidden;flex:0 0 auto;">
+        <button onclick="changeQty(-1)" style="background:#fff;border:none;padding:14px 18px;font-size:20px;cursor:pointer;color:#1a1a1a;line-height:1;">−</button>
+        <span id="qty-display" style="font-size:16px;font-weight:600;min-width:28px;text-align:center;color:#1a1a1a;">1</span>
+        <button onclick="changeQty(1)"  style="background:#fff;border:none;padding:14px 18px;font-size:20px;cursor:pointer;color:#1a1a1a;line-height:1;">+</button>
+      </div>
+      <button onclick="addToCart()" style="flex:1;background:#1a1a1a;color:#fff;border:none;border-radius:14px;font-size:15px;font-weight:600;padding:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+        Add to Cart
+      </button>
+    </div>
+
+    <button onclick="buyNow()" style="width:100%;background:#1a1a1a;color:#fff;border:none;border-radius:14px;font-size:15px;font-weight:700;padding:15px;cursor:pointer;margin-bottom:28px;">
+      Buy it now
+    </button>
+
+    <!-- Order steps -->
+    <div style="margin-bottom:24px;">
+      <p style="font-size:15px;font-weight:700;margin-bottom:16px;color:#1a1a1a;font-style:italic;">Steps To Place Your Order:</p>
+      <p style="font-size:14px;line-height:1.65;margin-bottom:14px;color:#1a1a1a;">Step 1 — Select the number of pages and add to cart or buy it now.</p>
+      <p style="font-size:14px;line-height:1.65;margin-bottom:14px;color:#1a1a1a;">Step 2 — Complete the checkout process by entering your shipping details and making the payment.</p>
+      <p style="font-size:14px;line-height:1.65;margin-bottom:14px;color:#1a1a1a;">Step 3 — After placing the order, send all your images and text to:</p>
+      <p style="font-size:14px;margin-bottom:20px;color:#1a1a1a;">timelessedition@gmail.com</p>
+      <p style="font-size:14px;font-style:italic;margin-bottom:10px;color:#1a1a1a;">Please send the following details in your email:</p>
+      <p style="font-size:14px;font-style:italic;line-height:1.7;margin-bottom:6px;color:#1a1a1a;">1. Enter the name you want printed on the magazine cover.</p>
+      <p style="font-size:14px;font-style:italic;line-height:1.7;margin-bottom:6px;color:#1a1a1a;">2. Instagram Username</p>
+      <p style="font-size:13px;font-style:italic;line-height:1.7;margin-bottom:6px;color:#555;">(Share your active Instagram username. This will be used to send your magazine preview before printing.)</p>
+      <p style="font-size:14px;font-style:italic;line-height:1.7;margin-bottom:6px;color:#1a1a1a;">3. Send the text/content you want inside the magazine.</p>
+      <p style="font-size:14px;font-style:italic;line-height:1.7;margin-bottom:6px;color:#1a1a1a;">4. Attach all your images in the email.</p>
+      <p style="font-size:13px;font-style:italic;line-height:1.7;margin-bottom:20px;color:#555;">(Minimum: 30, Maximum: 60 images)</p>
+      <p style="font-size:14px;font-weight:700;margin-bottom:8px;">Important Note:</p>
+      <p style="font-size:14px;font-weight:700;line-height:1.65;margin-bottom:20px;color:#1a1a1a;">Please make sure all images are clear and high quality for the best printing results.</p>
+      <p style="font-size:14px;font-weight:700;line-height:1.65;margin-bottom:32px;color:#1a1a1a;">After receiving your content, your magazine preview will be shared with you on Instagram before final printing. Kindly share your Instagram username for further communication and design/order status.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ── CART PAGE ── -->
+<div id="cart-page">
+  <div class="sticky-back">
+    <button class="back-btn" onclick="closeCart()">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+      <span style="font-size:13px;font-weight:600;">Back</span>
+    </button>
+    <span style="font-size:17px;font-weight:700;">Your Cart</span>
+  </div>
+
+  <div class="page" style="padding-top:20px;padding-bottom:120px;">
+    <div id="cart-items-list"></div>
+    <div id="cart-empty" style="display:none;text-align:center;padding:60px 0;color:#999;font-size:15px;">Your cart is empty</div>
+
+    <div id="cart-summary" style="margin-top:20px;padding-top:16px;border-top:2px solid #1a1a1a;">
+      <div style="display:flex;justify-content:space-between;font-size:16px;font-weight:700;margin-bottom:20px;">
+        <span>Total</span>
+        <span id="cart-total">Rs. 0</span>
+      </div>
+      <button class="primary-btn" onclick="openCheckout()">Proceed to Checkout</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── CHECKOUT PAGE ── -->
+<div id="checkout-page">
+  <div class="sticky-back">
+    <button class="back-btn" onclick="closeCheckout()">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+      <span style="font-size:13px;font-weight:600;">Back</span>
+    </button>
+    <span style="font-size:17px;font-weight:700;">Checkout</span>
+  </div>
+
+  <div class="page" style="padding-top:24px;padding-bottom:40px;">
+
+    <!-- Order summary -->
+    <div style="background:#f8f8f8;border-radius:14px;padding:16px;margin-bottom:24px;">
+      <p style="font-size:13px;font-weight:700;color:#555;margin-bottom:12px;text-transform:uppercase;letter-spacing:0.5px;">Order Summary</p>
+      <div id="checkout-summary-list"></div>
+      <div style="display:flex;justify-content:space-between;font-size:15px;font-weight:700;border-top:1px solid #e0e0e0;padding-top:12px;margin-top:8px;">
+        <span>Total</span>
+        <span id="checkout-total">Rs. 0</span>
+      </div>
+    </div>
+
+    <!-- Shipping Details -->
+    <p style="font-size:16px;font-weight:700;margin-bottom:16px;">Shipping Details</p>
+
+    <div class="form-group">
+      <label>Full Name *</label>
+      <input type="text" id="f-name" placeholder="Your full name">
+    </div>
+    <div class="form-group">
+      <label>Phone Number *</label>
+      <input type="tel" id="f-phone" placeholder="+91 XXXXX XXXXX">
+    </div>
+    <div class="form-group">
+      <label>Address *</label>
+      <textarea id="f-address" placeholder="House no, Street, Area"></textarea>
+    </div>
+    <div class="form-group">
+      <label>City *</label>
+      <input type="text" id="f-city" placeholder="City">
+    </div>
+    <div class="form-group">
+      <label>Pincode *</label>
+      <input type="text" id="f-pin" placeholder="Pincode">
+    </div>
+    <div class="form-group">
+      <label>Instagram Username</label>
+      <input type="text" id="f-insta" placeholder="@yourusername">
+    </div>
+    <div class="form-group">
+      <label>Note (optional)</label>
+      <textarea id="f-note" placeholder="Any special instructions..."></textarea>
+    </div>
+
+    <button class="primary-btn" onclick="placeOrder()">
+      <span style="display:flex;align-items:center;justify-content:center;gap:8px;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg>
+        Place Order via WhatsApp
+      </span>
+    </button>
+  </div>
+</div>
+
+<script>
+  /* ══════════════════════════════════
+     FLIP / IFRAME LINKS
+  ══════════════════════════════════ */
+  function renderThumbs(key) {
+    const mainEl = document.getElementById('thumb-main');
+    const iframeLinks = {
+      vogue:       'https://online.fliphtml5.com/Timelessedition/Hritik_20260521_203928_0000-5osz/',
+      couple:      'https://online.fliphtml5.com/Timelesseditions/1000049827/',
+      anniversary: 'https://online.fliphtml5.com/Timelesseditions/1000049835/',
+      bestfriend:  'https://online.fliphtml5.com/Timelesseditions/1000050323/',
+    };
+    const iframeLink = iframeLinks[key];
+    mainEl.innerHTML = `<img src="${key}.jpg" alt="${key}" style="width:100%;height:100%;object-fit:cover;display:block;">`;
+    if (iframeLink) {
+      mainEl.style.cursor = 'pointer';
+      mainEl.onclick = function() {
+        mainEl.innerHTML = `<div style="position:relative;width:100%;height:100%;"><iframe style="position:absolute;border:none;width:100%;height:100%;left:0;top:0;" src="${iframeLink}" seamless scrolling="no" frameborder="0" allowtransparency="true" allowfullscreen="true"></iframe></div>`;
+        mainEl.onclick = null; mainEl.style.cursor = 'default';
+      };
+      const playBtn = document.createElement('div');
+      playBtn.className = 'thumb-play-btn';
+      playBtn.innerHTML = `<div class="thumb-play-circle"><svg width="28" height="28" viewBox="0 0 24 24" fill="#1a1a1a"><polygon points="5,3 19,12 5,21"/></svg></div>`;
+      mainEl.appendChild(playBtn);
+    } else {
+      mainEl.style.cursor = 'default'; mainEl.onclick = null;
+    }
+  }
+
+  /* ══════════════════════════════════
+     PRODUCTS & STATE
+  ══════════════════════════════════ */
+  const products = {
+    anniversary: { title: 'Custom Anniversary Template' },
+    bestfriend:  { title: 'Custom Best Friend Template'  },
+    birthday:    { title: 'Custom Birthday Template'     },
+    couple:      { title: 'Custom Couple Magazine'       },
+    vogue:       { title: 'Custom Vogue Collection'      },
+  };
+
+  const pagePrices = { 8: 399, 12: 599, 16: 799, 20: 999 };
+  let currentQty = 1, selectedPages = 8, currentKey = null, currentCat = null;
+
+  /* ══════════════════════════════════
+     CART
+  ══════════════════════════════════ */
+  let cart = []; // [{ key, title, img, pages, price, qty }]
+
+  function updateCartBadge() {
+    const total = cart.reduce((s, i) => s + i.qty, 0);
+    const display = total > 0 ? 'flex' : 'none';
+    ['cart-badge','cart-badge-product'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) { el.textContent = total; el.style.display = display; }
+    });
+  }
+
+  function addToCart() {
+    const title = products[currentKey].title;
+    const price = pagePrices[selectedPages];
+    const existing = cart.find(i => i.key === currentKey && i.pages === selectedPages);
+    if (existing) {
+      existing.qty += currentQty;
+    } else {
+      cart.push({ key: currentKey, title, img: currentKey + '.jpg', pages: selectedPages, price, qty: currentQty });
+    }
+    updateCartBadge();
+    // Flash feedback
+    const btn = event.currentTarget;
+    const orig = btn.innerHTML;
+    btn.innerHTML = '✓ Added!';
+    btn.style.background = '#2d7a3a';
+    setTimeout(() => { btn.innerHTML = orig; btn.style.background = '#1a1a1a'; }, 1200);
+  }
+
+  function buyNow() {
+    addToCartSilent();
+    renderCheckoutSummary();
+    showOnly('checkout-page');
+    document.getElementById('checkout-page').scrollTop = 0;
+    history.pushState({ page: 'checkout' }, '', '#checkout');
+  }
+
+  function addToCartSilent() {
+    const title = products[currentKey].title;
+    const price = pagePrices[selectedPages];
+    const existing = cart.find(i => i.key === currentKey && i.pages === selectedPages);
+    if (existing) { existing.qty += currentQty; }
+    else { cart.push({ key: currentKey, title, img: currentKey + '.jpg', pages: selectedPages, price, qty: currentQty }); }
+    updateCartBadge();
+  }
+
+  function removeFromCart(idx) {
+    cart.splice(idx, 1);
+    updateCartBadge();
+    renderCartPage();
+  }
+
+  function changeCartQty(idx, delta) {
+    cart[idx].qty = Math.max(1, cart[idx].qty + delta);
+    updateCartBadge();
+    renderCartPage();
+  }
+
+  function renderCartPage() {
+    const list = document.getElementById('cart-items-list');
+    const empty = document.getElementById('cart-empty');
+    const summary = document.getElementById('cart-summary');
+
+    if (cart.length === 0) {
+      list.innerHTML = '';
+      empty.style.display = 'block';
+      summary.style.display = 'none';
+      return;
+    }
+    empty.style.display = 'none';
+    summary.style.display = 'block';
+
+    list.innerHTML = cart.map((item, idx) => `
+      <div class="cart-item">
+        <img class="cart-item-img" src="${item.img}" alt="${item.title}" onerror="this.style.background='#eee';this.src=''">
+        <div class="cart-item-info">
+          <div class="cart-item-title">${item.title}</div>
+          <div class="cart-item-sub">${item.pages} Pages</div>
+          <div class="qty-ctrl">
+            <button onclick="changeCartQty(${idx},-1)">−</button>
+            <span>${item.qty}</span>
+            <button onclick="changeCartQty(${idx},1)">+</button>
+          </div>
+          <div class="cart-item-price" style="margin-top:8px;">Rs. ${item.price * item.qty}</div>
+        </div>
+        <button class="cart-item-remove" onclick="removeFromCart(${idx})">&#x2715;</button>
+      </div>
+    `).join('');
+
+    const total = cart.reduce((s, i) => s + i.price * i.qty, 0);
+    document.getElementById('cart-total').textContent = 'Rs. ' + total;
+  }
+
+  /* ══════════════════════════════════
+     CHECKOUT & WHATSAPP
+  ══════════════════════════════════ */
+  function renderCheckoutSummary() {
+    const list = document.getElementById('checkout-summary-list');
+    list.innerHTML = cart.map(item => `
+      <div style="display:flex;justify-content:space-between;font-size:14px;margin-bottom:8px;">
+        <span>${item.title} (${item.pages}pg × ${item.qty})</span>
+        <span>Rs. ${item.price * item.qty}</span>
+      </div>
+    `).join('');
+    const total = cart.reduce((s, i) => s + i.price * i.qty, 0);
+    document.getElementById('checkout-total').textContent = 'Rs. ' + total;
+  }
+
+  function placeOrder() {
+    const name    = document.getElementById('f-name').value.trim();
+    const phone   = document.getElementById('f-phone').value.trim();
+    const address = document.getElementById('f-address').value.trim();
+    const city    = document.getElementById('f-city').value.trim();
+    const pin     = document.getElementById('f-pin').value.trim();
+    const insta   = document.getElementById('f-insta').value.trim();
+    const note    = document.getElementById('f-note').value.trim();
+
+    if (!name || !phone || !address || !city || !pin) {
+      alert('Please fill in all required fields.');
+      return;
+    }
+
+    const total = cart.reduce((s, i) => s + i.price * i.qty, 0);
+    const itemLines = cart.map(i => `• ${i.title} | ${i.pages} pages × ${i.qty} = Rs. ${i.price * i.qty}`).join('\n');
+
+    let msg = `Hi! I want to place an order on Timeless Edition.\n\n`;
+    msg += `*Order Details:*\n${itemLines}\n\n`;
+    msg += `*Total: Rs. ${total}*\n\n`;
+    msg += `*Shipping Details:*\n`;
+    msg += `Name: ${name}\n`;
+    msg += `Phone: ${phone}\n`;
+    msg += `Address: ${address}, ${city} - ${pin}\n`;
+    if (insta) msg += `Instagram: ${insta}\n`;
+    if (note)  msg += `Note: ${note}\n`;
+
+    window.open('https://wa.me/918235755702?text=' + encodeURIComponent(msg), '_blank');
+  }
+
+  /* ══════════════════════════════════
+     PAGE NAVIGATION
+  ══════════════════════════════════ */
+  const allPages = ['main-page','category-page','product-page','cart-page','checkout-page'];
+  function showOnly(id) {
+    allPages.forEach(p => document.getElementById(p).style.display = p === id ? 'block' : 'none');
+  }
+
+  function openPage(key) {
+    currentKey = key; currentQty = 1; selectedPages = 8;
+    document.getElementById('popup-title').textContent = products[key].title;
+    renderThumbs(key);
+    document.getElementById('qty-display').textContent = '1';
+    document.getElementById('price-display').textContent = 'Rs. 399.00';
+    document.querySelectorAll('.page-btn').forEach(b => b.classList.remove('selected'));
+    document.querySelectorAll('.page-btn')[0].classList.add('selected');
+    showOnly('product-page');
+    document.getElementById('product-page').scrollTop = 0;
+    history.pushState({ page: 'product', key }, '', '#' + key);
+  }
+
+  function closePage() {
+    const mainEl = document.getElementById('thumb-main');
+    if (mainEl) mainEl.innerHTML = '';
+    if (currentCat) { showOnly('category-page'); } else { showOnly('main-page'); }
+    history.replaceState({ page: 'main' }, '', window.location.pathname);
+  }
+
+  function openCart() {
+    renderCartPage();
+    showOnly('cart-page');
+    document.getElementById('cart-page').scrollTop = 0;
+    history.pushState({ page: 'cart' }, '', '#cart');
+  }
+
+  function closeCart() {
+    if (currentCat) { showOnly('category-page'); }
+    else { showOnly('main-page'); }
+    history.replaceState({ page: 'main' }, '', window.location.pathname);
+  }
+
+  function openCheckout() {
+    if (cart.length === 0) return;
+    renderCheckoutSummary();
+    showOnly('checkout-page');
+    document.getElementById('checkout-page').scrollTop = 0;
+    history.pushState({ page: 'checkout' }, '', '#checkout');
+  }
+
+  function closeCheckout() {
+    openCart();
+  }
+
+  function goHome() {
+    const mainEl = document.getElementById('thumb-main');
+    if (mainEl) mainEl.innerHTML = '';
+    currentKey = null; currentCat = null;
+    showOnly('main-page');
+    history.replaceState({ page: 'main' }, '', window.location.pathname);
+  }
+
+  /* ══════════════════════════════════
+     CATEGORIES
+  ══════════════════════════════════ */
+  const categories = {
+    magazines: {
+      title: 'Magazines',
+      items: [
+        { key: 'anniversary', label: 'Custom Anniversary<br>Template', img: 'anniversary.jpg' },
+        { key: 'bestfriend',  label: 'Custom Best Friend<br>Template',  img: 'bestfriend.jpg'  },
+        { key: 'birthday',    label: 'Custom Birthday<br>Template',    img: 'birthday.jpg'    },
+        { key: 'couple',      label: 'Custom Couple<br>Magazine',      img: 'couple.jpg'      },
+        { key: 'vogue',       label: 'Custom Vogue<br>Collection',     img: 'vogue.jpg'       },
+      ]
+    },
+    crochet: { title: 'Crochet', items: [] }
+  };
+
+  function openCategory(cat) {
+    currentCat = cat;
+    const data = categories[cat];
+    document.getElementById('category-title').textContent = data.title;
+    const grid = document.getElementById('category-grid');
+    if (data.items.length === 0) {
+      grid.innerHTML = '<p style="color:#888;font-size:15px;padding:20px 0;">Coming soon!</p>';
+    } else {
+      grid.innerHTML = data.items.map(item => `
+        <a class="product-card" href="#${item.key}" onclick="event.preventDefault();openPage('${item.key}')">
+          <div class="product-image-wrap">
+            <img src="${item.img}" alt="${item.key}" style="width:100%;height:100%;object-fit:cover;display:block;">
+          </div>
+          <div class="product-label">${item.label}</div>
+          <div class="product-price">Rs. 399.00</div>
+        </a>
+      `).join('');
+    }
+    showOnly('category-page');
+    document.getElementById('category-page').scrollTop = 0;
+    history.pushState({ page: 'category', cat }, '', '#' + cat);
+  }
+
+  function closeCategory() {
+    currentCat = null;
+    showOnly('main-page');
+    history.replaceState({ page: 'main' }, '', window.location.pathname);
+  }
+
+  /* ══════════════════════════════════
+     PAGE / QTY SELECTORS
+  ══════════════════════════════════ */
+  function selectPages(btn, pages) {
+    selectedPages = pages;
+    document.querySelectorAll('.page-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+    document.getElementById('price-display').textContent = 'Rs. ' + pagePrices[pages] + '.00';
+  }
+
+  function changeQty(delta) {
+    currentQty = Math.max(1, currentQty + delta);
+    document.getElementById('qty-display').textContent = currentQty;
+  }
+
+  /* ══════════════════════════════════
+     BACK BUTTON
+  ══════════════════════════════════ */
+  window.addEventListener('popstate', function() {
+    const pp = document.getElementById('product-page').style.display === 'block';
+    const cp = document.getElementById('category-page').style.display === 'block';
+    const ca = document.getElementById('cart-page').style.display === 'block';
+    const co = document.getElementById('checkout-page').style.display === 'block';
+    if (co) { closeCheckout(); }
+    else if (ca) { closeCart(); }
+    else if (pp) { closePage(); }
+    else if (cp) { closeCategory(); }
+  });
+
+  window.addEventListener('load', function() {
+    history.replaceState({ page: 'main' }, '', window.location.pathname);
+  });
+
+  /* ══════════════════════════════════
+     MENU
+  ══════════════════════════════════ */
+  function openMenu() {
+    document.getElementById('side-menu').style.display = 'block';
+    document.getElementById('menu-overlay').style.display = 'block';
+    document.body.style.overflow = 'hidden';
+  }
+  function closeMenu() {
+    document.getElementById('side-menu').style.display = 'none';
+    document.getElementById('menu-overlay').style.display = 'none';
+    document.body.style.overflow = '';
+  }
+</script>
+
+</body>
+</html>
