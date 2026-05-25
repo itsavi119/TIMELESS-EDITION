@@ -1,0 +1,1295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<link rel="preconnect" href="https://online.fliphtml5.com">
+<title>Timeless Edition</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    background: #fff; color: #1a1a1a; font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+    overscroll-behavior-y: none;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+
+  /* Marquee */
+  .marquee-bar {
+    background: #1a1a1a;
+    overflow: hidden;
+    white-space: nowrap;
+    padding: 10px 0;
+    position: sticky;
+    top: 0;
+    z-index: 49;
+  }
+  .marquee-track {
+    display: inline-block;
+    will-change: transform;
+    animation: marquee 30s linear infinite;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+  }
+  .marquee-track span {
+    font-size: 13px;
+    color: #fff;
+    font-weight: 500;
+    letter-spacing: 0.3px;
+    padding: 0 12px;
+  }
+  @keyframes marquee {
+    0%   { transform: translate3d(0,0,0); }
+    100% { transform: translate3d(-50%,0,0); }
+  }
+
+  .announcement-bar {
+    background: #fff; border-bottom: 1px solid #e8e8e8;
+    text-align: center; padding: 10px 16px; font-size: 13px; color: #1a1a1a;
+  }
+
+  .header {
+    background: #F2D9D9; border-bottom: 1px solid #e8c8c8;
+    display: flex; align-items: center; padding: 0 16px;
+    padding-left: max(16px, env(safe-area-inset-left));
+    padding-right: max(16px, env(safe-area-inset-right));
+    height: 60px; position: sticky; top: 0; z-index: 50;
+  }
+  .header-left  { display: flex; align-items: center; gap: 16px; flex: 1; }
+  .header-right { display: flex; align-items: center; gap: 12px; flex: 1; justify-content: flex-end; }
+
+  .icon-btn {
+    background: none; border: none; cursor: pointer;
+    padding: 6px; display: flex; align-items: center; justify-content: center; color: #1a1a1a;
+  }
+  .icon-hamburger { width: 20px; height: 14px; display: flex; flex-direction: column; justify-content: space-between; }
+  .icon-hamburger span { display: block; height: 2px; background: #1a1a1a; border-radius: 1px; }
+
+  .brand-name {
+    font-size: 18px; font-weight: 700; color: #1a1a1a;
+    text-align: center; flex: 1; white-space: nowrap; cursor: pointer;
+  }
+
+  /* Cart icon wrapper */
+  .cart-btn { position: relative; background: none; border: none; cursor: pointer; padding: 6px; display: flex; align-items: center; color: #1a1a1a; }
+  .cart-badge {
+    position: absolute; top: 0; right: 0;
+    background: #1a1a1a; color: #fff; border-radius: 50%;
+    font-size: 10px; font-weight: 700;
+    width: 16px; height: 16px; display: none;
+    align-items: center; justify-content: center; line-height: 1;
+  }
+
+  .page { max-width: 768px; margin: 0 auto; padding: 0 12px; }
+
+  .products-heading {
+    font-size: 28px; font-weight: 700; color: #1a1a1a;
+    padding: 28px 0 20px; letter-spacing: -0.3px;
+  }
+
+  .product-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 12px; padding-bottom: 48px;
+  }
+
+  .product-card { cursor: pointer; text-decoration: none; color: inherit; display: block; }
+  .product-image-wrap { width: 100%; aspect-ratio: 3/4; overflow: hidden; background: #f2f2f2; position: relative; }
+  .product-label { padding: 8px 0 2px; font-size: 14px; color: #1a1a1a; line-height: 1.35; }
+  .product-price { font-size: 14px; color: #1a1a1a; padding-bottom: 4px; }
+
+  /* Full-screen pages */
+  #product-page, #cart-page, #checkout-page {
+    display: none; position: fixed; inset: 0;
+    background: #fff; z-index: 100;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+  }
+
+  /* Prevent iOS from zooming into inputs (font-size must be >= 16px) */
+  .form-group input, .form-group textarea, #coupon-input {
+    font-size: 16px !important;
+  }
+
+  .thumb-main-wrap {
+    width: 100%; aspect-ratio: 3/4; overflow: hidden;
+    background: #f2f2f2; border-radius: 14px; margin-bottom: 20px;
+    position: relative; padding: 10px;
+  }
+  .thumb-main-wrap img, .thumb-main-wrap svg { width: 100%; height: 100%; object-fit: cover; display: block; border-radius: 8px; }
+
+  .thumb-play-btn {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    background: transparent;
+  }
+  .thumb-play-circle {
+    width: 48px; height: 48px; border-radius: 50%;
+    background: rgba(255,255,255,0.30);
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+    border: 1.5px solid rgba(255,255,255,0.6);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    transition: transform 0.15s ease;
+  }
+  .thumb-play-circle:active { transform: scale(0.92); }
+  .thumb-play-circle svg { margin-left: 3px; }
+
+  .rose-btn {
+    padding: 9px 14px; border-radius: 10px; border: 1.5px solid #e0e0e0;
+    background: #fff; font-size: 13px; font-weight: 600; cursor: pointer; color: #1a1a1a;
+    transition: border-color 0.15s;
+  }
+  .rose-btn.rose-selected { border-color: #1a1a1a; background: #f5f5f5; }
+
+  .page-btn {
+    flex: 1; padding: 14px 0;
+    border: 1.5px solid #e0e0e0; background: #fff;
+    border-radius: 12px; font-size: 15px; font-weight: 500;
+    cursor: pointer; color: #1a1a1a;
+    transition: background 0.15s, border-color 0.15s, color 0.15s;
+  }
+  .page-btn.selected { background: #1a1a1a; color: #fff; border-color: #1a1a1a; }
+
+  /* Cart items */
+  .cart-item {
+    display: flex; gap: 12px; padding: 16px 0;
+    border-bottom: 1px solid #f0f0f0; align-items: flex-start;
+  }
+  .cart-item-img {
+    width: 72px; height: 96px; object-fit: cover;
+    border-radius: 8px; background: #f2f2f2; flex-shrink: 0;
+  }
+  .cart-item-info { flex: 1; }
+  .cart-item-title { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+  .cart-item-sub { font-size: 13px; color: #555; margin-bottom: 8px; }
+  .cart-item-price { font-size: 14px; font-weight: 700; }
+  .cart-item-remove { background: none; border: none; cursor: pointer; color: #999; font-size: 18px; padding: 4px; }
+
+  /* Qty controls in cart */
+  .qty-ctrl { display: flex; align-items: center; gap: 0; border: 1.5px solid #e0e0e0; border-radius: 10px; overflow: hidden; width: fit-content; margin-top: 8px; }
+  .qty-ctrl button { background: #fff; border: none; padding: 6px 12px; font-size: 18px; cursor: pointer; color: #1a1a1a; line-height: 1; }
+  .qty-ctrl span { font-size: 14px; font-weight: 600; min-width: 24px; text-align: center; }
+
+  /* Checkout form */
+  .form-group { margin-bottom: 18px; }
+  .form-group label { display: block; font-size: 13px; font-weight: 600; color: #555; margin-bottom: 6px; }
+  .form-group input, .form-group textarea {
+    width: 100%; border: 1.5px solid #e0e0e0; border-radius: 12px;
+    padding: 12px 14px; font-size: 15px; color: #1a1a1a;
+    background: #fff; outline: none; font-family: inherit;
+  }
+  .form-group input:focus, .form-group textarea:focus { border-color: #1a1a1a; }
+  .form-group textarea { min-height: 80px; resize: vertical; }
+
+  .sticky-back {
+    position: sticky; top: 0; z-index: 10; background: #fff;
+    border-bottom: 1px solid #f0f0f0;
+    display: flex; align-items: center; padding: 14px 16px 10px; gap: 10px;
+  }
+  .back-btn {
+    background: none; border: none; padding: 4px; cursor: pointer;
+    display: flex; align-items: center; gap: 6px; color: #1a1a1a; font-size: 15px;
+  }
+
+  .primary-btn {
+    width: 100%; background: #1a1a1a; color: #fff; border: none;
+    border-radius: 14px; font-size: 15px; font-weight: 700;
+    padding: 15px; cursor: pointer; margin-bottom: 12px;
+    padding-bottom: max(15px, calc(15px + env(safe-area-inset-bottom)));
+  }
+  .primary-btn:disabled { background: #ccc; cursor: not-allowed; }
+
+  /* Safe area bottom padding for scrollable pages */
+  #checkout-page .page { padding-bottom: max(40px, calc(40px + env(safe-area-inset-bottom))); }
+  #cart-page .page    { padding-bottom: max(120px, calc(120px + env(safe-area-inset-bottom))); }
+  #product-page > div:last-child { padding-bottom: max(32px, calc(32px + env(safe-area-inset-bottom))); }
+
+  /* Side menu safe area */
+  #side-menu { padding-bottom: env(safe-area-inset-bottom); }
+</style>
+</head>
+<body>
+
+<!-- Menu Overlay -->
+<div id="menu-overlay" onclick="closeMenu()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:200;"></div>
+
+<!-- Side Drawer -->
+<div id="side-menu" style="display:none;position:fixed;top:0;left:0;width:260px;height:100%;background:#fff;z-index:201;padding:0;box-shadow:4px 0 20px rgba(0,0,0,0.12);overflow-y:auto;">
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:18px 16px;border-bottom:1px solid #e8e8e8;">
+    <span style="font-size:17px;font-weight:700;color:#1a1a1a;">Menu</span>
+    <button onclick="closeMenu()" style="background:none;border:none;cursor:pointer;font-size:22px;color:#1a1a1a;line-height:1;">&#x2715;</button>
+  </div>
+  <nav>
+    <a href="#" onclick="event.preventDefault();closeMenu();setTimeout(()=>openCategory('magazines'),50)" style="display:block;padding:16px 20px;font-size:15px;color:#1a1a1a;text-decoration:none;border-bottom:1px solid #f0f0f0;">Magazines</a>
+    <a href="#" onclick="event.preventDefault();closeMenu();setTimeout(()=>openCategory('crochet'),50)" style="display:block;padding:16px 20px;font-size:15px;color:#1a1a1a;text-decoration:none;border-bottom:1px solid #f0f0f0;">Crochet</a>
+    <a href="#" onclick="event.preventDefault();closeMenu()" style="display:block;padding:16px 20px;font-size:15px;color:#1a1a1a;text-decoration:none;border-bottom:1px solid #f0f0f0;">About</a>
+  </nav>
+</div>
+
+<!-- Marquee Bar -->
+<div class="marquee-bar">
+  <div class="marquee-track">
+    <span>✦ Free Shipping Above Order ₹700 ✦</span>
+    <span>✦ Estimated Delivery 5–7 Working Days ✦</span>
+    <span>✦ 5K+ Happy Customers ✦</span>
+    <span>✦ Unique Personalized Gifts ✦</span>
+    <span>✦ Free Shipping Above Order ₹700 ✦</span>
+    <span>✦ Estimated Delivery 5–7 Working Days ✦</span>
+    <span>✦ 5K+ Happy Customers ✦</span>
+    <span>✦ Unique Personalized Gifts ✦</span>
+  </div>
+</div>
+
+<!-- Announcement Bar -->
+<div class="announcement-bar">create your own custom magazine</div>
+
+<!-- Header -->
+<header class="header">
+  <div class="header-left">
+    <button class="icon-btn" aria-label="Menu" onclick="openMenu()">
+      <div class="icon-hamburger"><span></span><span></span><span></span></div>
+    </button>
+  </div>
+  <div class="brand-name" onclick="goHome()">Timeless Edition</div>
+  <div class="header-right">
+    <!-- Cart Icon -->
+    <button class="cart-btn" onclick="openCart()" aria-label="Cart">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
+        <line x1="3" y1="6" x2="21" y2="6"/>
+        <path d="M16 10a4 4 0 01-8 0"/>
+      </svg>
+      <span class="cart-badge" id="cart-badge">0</span>
+    </button>
+    </div>
+</header>
+
+<!-- ── HOME PAGE ── -->
+<div id="main-page">
+  <div class="page">
+
+    <!-- Bestseller Section -->
+    <div class="products-heading">Bestseller</div>
+    <div class="product-grid" style="padding-bottom:48px;">
+
+      <a class="product-card" href="#anniversary" onclick="event.preventDefault();openPage('anniversary')">
+        <div class="product-image-wrap">
+          <img src="https://www.image2url.com/r2/default/images/1779643879742-9b95ffa0-2297-46c6-ae02-0511280065ff.jpg" alt="anniversary" loading="lazy" decoding="async" style="width:100%;height:100%;object-fit:cover;display:block;">
+        </div>
+        <div class="product-label">Custom Anniversary<br>Template</div>
+        <div class="product-price">Rs. 399.00</div>
+      </a>
+
+      <a class="product-card" href="#bestfriend" onclick="event.preventDefault();openPage('bestfriend')">
+        <div class="product-image-wrap">
+          <img src="https://www.image2url.com/r2/default/images/1779643003649-cef0e5f1-e7e2-4ef5-b581-dff39a39ce4c.jpg" alt="bestfriend" loading="lazy" decoding="async" style="width:100%;height:100%;object-fit:cover;display:block;">
+        </div>
+        <div class="product-label">Custom Best Friend<br>Template</div>
+        <div class="product-price">Rs. 399.00</div>
+      </a>
+
+      <a class="product-card" href="#birthday" onclick="event.preventDefault();openPage('birthday')">
+        <div class="product-image-wrap">
+          <img src="https://www.image2url.com/r2/default/images/1779681468890-758dea39-e373-4f1b-977c-fa09bf4a9f97.png" alt="birthday" loading="lazy" decoding="async" style="width:100%;height:100%;object-fit:cover;display:block;">
+        </div>
+        <div class="product-label">Custom Birthday<br>Template</div>
+        <div class="product-price">Rs. 399.00</div>
+      </a>
+
+      <a class="product-card" href="#couple" onclick="event.preventDefault();openPage('couple')">
+        <div class="product-image-wrap">
+          <img src="https://www.image2url.com/r2/default/images/1779643526885-b4aef378-c598-4c75-a6dd-6c3572324c64.jpg" alt="couple" loading="lazy" decoding="async" style="width:100%;height:100%;object-fit:cover;display:block;">
+        </div>
+        <div class="product-label">Custom Couple<br>Magazine</div>
+        <div class="product-price">Rs. 399.00</div>
+      </a>
+
+      <a class="product-card" href="#vogue" onclick="event.preventDefault();openPage('vogue')">
+        <div class="product-image-wrap">
+          <img src="https://www.image2url.com/r2/default/images/1779643852439-639e5e9b-08bb-409c-bf8d-e18a4a00d7c5.jpg" alt="vogue" loading="lazy" decoding="async" style="width:100%;height:100%;object-fit:cover;display:block;">
+        </div>
+        <div class="product-label">Custom Vogue<br>Collection</div>
+        <div class="product-price">Rs. 399.00</div>
+      </a>
+
+      <a class="product-card" href="#crochet" onclick="event.preventDefault();openPage('crochet')">
+        <div class="product-image-wrap">
+          <img src="https://www.image2url.com/r2/default/images/1779681789869-84eec21f-be38-4ddd-b7c5-180e2818ffbb.png" alt="crochet" loading="lazy" decoding="async" style="width:100%;height:100%;object-fit:cover;display:block;">
+        </div>
+        <div class="product-label">Sunflower<br>Serenity</div>
+        <div class="product-price" style="display:flex;align-items:center;gap:6px;">
+          <span>Rs. 699.00</span>
+          <span style="text-decoration:line-through;color:#aaa;font-size:12px;">Rs. 1000.00</span>
+        </div>
+      </a>
+
+    </div>
+  </div>
+</div>
+
+<!-- ── CATEGORY PAGE ── -->
+<div id="category-page" style="display:none;">
+  <div class="sticky-back">
+    <button class="back-btn" onclick="closeCategory()">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+    </button>
+    <span id="category-title" style="font-size:17px;font-weight:700;color:#1a1a1a;"></span>
+  </div>
+  <div class="page">
+    <div class="product-grid" id="category-grid" style="padding-top:20px;padding-bottom:48px;"></div>
+  </div>
+</div>
+
+<!-- ── PRODUCT PAGE ── -->
+<div id="product-page">
+  <div class="sticky-back">
+    <button class="back-btn" onclick="handleProductBack()">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+      <span style="font-size:13px;font-weight:600;letter-spacing:0.3px;">Back</span>
+    </button>
+    <button class="cart-btn" onclick="openCart()" aria-label="Cart" style="margin-left:auto;">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+      <span class="cart-badge" id="cart-badge-product">0</span>
+    </button>
+  </div>
+
+  <div style="padding:16px 16px 0;">
+    <div class="thumb-main-wrap" id="thumb-main" style="margin-bottom:12px;"></div>
+  </div>
+
+  <div style="padding:0 16px 32px;">
+    <div id="popup-title" style="font-size:26px;font-weight:700;line-height:1.25;margin-bottom:10px;color:#1a1a1a;"></div>
+    <div id="price-display" style="font-size:16px;color:#1a1a1a;margin-bottom:20px;">Rs. 399.00</div>
+
+    <hr style="border:none;border-top:1px solid #e8e8e8;margin-bottom:20px;">
+
+    <!-- MAGAZINE selectors -->
+    <div id="magazine-options">
+      <div style="font-size:14px;color:#1a1a1a;margin-bottom:12px;">Number of Pages</div>
+      <div style="display:flex;gap:10px;margin-bottom:24px;">
+        <button onclick="selectPages(this,8)"  class="page-btn selected">8</button>
+        <button onclick="selectPages(this,12)" class="page-btn">12</button>
+        <button onclick="selectPages(this,16)" class="page-btn">16</button>
+        <button onclick="selectPages(this,20)" class="page-btn">20</button>
+      </div>
+      <div style="display:flex;gap:10px;margin-bottom:12px;align-items:stretch;">
+        <div style="display:flex;align-items:center;border:1.5px solid #e0e0e0;border-radius:14px;overflow:hidden;flex:0 0 auto;">
+          <button onclick="changeQty(-1)" style="background:#fff;border:none;padding:14px 18px;font-size:20px;cursor:pointer;color:#1a1a1a;line-height:1;">−</button>
+          <span id="qty-display" style="font-size:16px;font-weight:600;min-width:28px;text-align:center;color:#1a1a1a;">1</span>
+          <button onclick="changeQty(1)"  style="background:#fff;border:none;padding:14px 18px;font-size:20px;cursor:pointer;color:#1a1a1a;line-height:1;">+</button>
+        </div>
+        <button onclick="addToCart(this)" style="flex:1;background:#1a1a1a;color:#fff;border:none;border-radius:14px;font-size:15px;font-weight:600;padding:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+          Add to Cart
+        </button>
+      </div>
+      <button onclick="buyNow()" style="width:100%;background:#1a1a1a;color:#fff;border:none;border-radius:14px;font-size:15px;font-weight:700;padding:15px;cursor:pointer;margin-bottom:28px;">
+        Buy it now
+      </button>
+    </div>
+
+    <!-- CROCHET customiser -->
+    <div id="crochet-options" style="display:none;">
+
+      <!-- Base bundle info -->
+      <div style="background:#fdf6f0;border-radius:14px;padding:14px 16px;margin-bottom:24px;border:1.5px solid #f0e0d0;">
+        <p style="font-size:14px;font-weight:700;color:#1a1a1a;margin-bottom:8px;">🌻 Base Bundle — Rs. 699</p>
+        <div style="display:flex;flex-direction:column;gap:4px;">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span style="font-size:18px;">🌻</span>
+            <span style="font-size:13px;color:#555;">2 Sunflowers</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span style="font-size:18px;">🌹</span>
+            <span style="font-size:13px;color:#555;">2 Roses (White &amp; Pink)</span>
+          </div>
+        </div>
+      </div>
+
+      <hr style="border:none;border-top:1px solid #e8e8e8;margin-bottom:20px;">
+
+      <!-- Extra flowers -->
+      <p style="font-size:14px;font-weight:700;color:#1a1a1a;margin-bottom:14px;">Add Extra Flowers</p>
+
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+        <div>
+          <p style="font-size:14px;font-weight:600;color:#1a1a1a;">🌻 Extra Sunflower</p>
+          <p style="font-size:13px;color:#888;">+ Rs. 200 each</p>
+        </div>
+        <div style="display:flex;align-items:center;border:1.5px solid #e0e0e0;border-radius:12px;overflow:hidden;">
+          <button onclick="changeCrochet('sunflower',-1)" style="background:#fff;border:none;padding:10px 16px;font-size:18px;cursor:pointer;color:#1a1a1a;">−</button>
+          <span id="extra-sunflower-count" style="font-size:15px;font-weight:600;min-width:24px;text-align:center;">0</span>
+          <button onclick="changeCrochet('sunflower',1)"  style="background:#fff;border:none;padding:10px 16px;font-size:18px;cursor:pointer;color:#1a1a1a;">+</button>
+        </div>
+      </div>
+
+      <!-- White Rose row -->
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;gap:10px;">
+        <div style="display:flex;align-items:center;gap:10px;flex:1;min-width:0;">
+          <button style="width:26px;height:26px;border-radius:50%;background:#f5f0eb;border:2px solid #bbb;box-shadow:0 0 0 1px #bbb;flex-shrink:0;cursor:default;"></button>
+          <div>
+            <p style="font-size:14px;font-weight:600;color:#1a1a1a;margin-bottom:2px;">🌹 Extra White Rose</p>
+            <p style="font-size:13px;color:#888;margin-bottom:0;">+ Rs. 150 each</p>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;border:1.5px solid #e0e0e0;border-radius:12px;overflow:hidden;flex-shrink:0;">
+          <button onclick="changeCrochet('roseWhite',-1)" style="background:#fff;border:none;padding:10px 16px;font-size:18px;cursor:pointer;color:#1a1a1a;">−</button>
+          <span id="extra-rose-white-count" style="font-size:15px;font-weight:600;min-width:24px;text-align:center;">0</span>
+          <button onclick="changeCrochet('roseWhite',1)"  style="background:#fff;border:none;padding:10px 16px;font-size:18px;cursor:pointer;color:#1a1a1a;">+</button>
+        </div>
+      </div>
+      <!-- Pink Rose row -->
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;gap:10px;">
+        <div style="display:flex;align-items:center;gap:10px;flex:1;min-width:0;">
+          <button style="width:26px;height:26px;border-radius:50%;background:#f48fb1;border:2px solid transparent;box-shadow:0 1px 4px rgba(0,0,0,0.12);flex-shrink:0;cursor:default;"></button>
+          <div>
+            <p style="font-size:14px;font-weight:600;color:#1a1a1a;margin-bottom:2px;">🌹 Extra Pink Rose</p>
+            <p style="font-size:13px;color:#888;margin-bottom:0;">+ Rs. 150 each</p>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;border:1.5px solid #e0e0e0;border-radius:12px;overflow:hidden;flex-shrink:0;">
+          <button onclick="changeCrochet('rosePink',-1)" style="background:#fff;border:none;padding:10px 16px;font-size:18px;cursor:pointer;color:#1a1a1a;">−</button>
+          <span id="extra-rose-pink-count" style="font-size:15px;font-weight:600;min-width:24px;text-align:center;">0</span>
+          <button onclick="changeCrochet('rosePink',1)"  style="background:#fff;border:none;padding:10px 16px;font-size:18px;cursor:pointer;color:#1a1a1a;">+</button>
+        </div>
+      </div>
+
+      <hr style="border:none;border-top:1px solid #e8e8e8;margin-bottom:20px;">
+
+      <!-- Customisation note -->
+      <p style="font-size:14px;font-weight:700;color:#1a1a1a;margin-bottom:4px;">✏️ Customisation Note</p>
+      <p style="font-size:12px;color:#888;margin-bottom:10px;">Rose colors, special requests, anything — tell us here</p>
+      <textarea id="crochet-note" placeholder="e.g. Rose 1 — Pink, Rose 2 — White, add a name tag..." style="width:100%;border:1.5px solid #e0e0e0;border-radius:12px;padding:12px 14px;font-size:14px;color:#1a1a1a;background:#fff;outline:none;font-family:inherit;min-height:90px;resize:vertical;box-sizing:border-box;" oninput="this.style.borderColor='#1a1a1a'" onblur="this.style.borderColor='#e0e0e0'"></textarea>
+
+      <!-- Live total -->
+      <div style="background:#1a1a1a;border-radius:14px;padding:14px 18px;margin-top:20px;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center;">
+        <span style="color:#fff;font-size:14px;font-weight:600;">Total</span>
+        <span id="crochet-total-display" style="color:#fff;font-size:18px;font-weight:700;">Rs. 699</span>
+      </div>
+
+      <button onclick="addCrochetToCart()" style="width:100%;background:#1a1a1a;color:#fff;border:none;border-radius:14px;font-size:15px;font-weight:600;padding:15px;cursor:pointer;margin-bottom:12px;display:flex;align-items:center;justify-content:center;gap:8px;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+        Add to Cart
+      </button>
+      <button onclick="buyCrochetNow()" style="width:100%;background:#1a1a1a;color:#fff;border:none;border-radius:14px;font-size:15px;font-weight:700;padding:15px;cursor:pointer;margin-bottom:28px;">
+        Buy it now
+      </button>
+    </div>
+
+    <!-- Order steps -->
+    <div id="order-steps-magazine" style="margin-bottom:32px;">
+      <p style="font-size:15px;font-weight:700;margin-bottom:20px;color:#1a1a1a;letter-spacing:0.3px;">Steps To Place Your Order</p>
+
+      <!-- Step 1 -->
+      <div style="display:flex;gap:14px;margin-bottom:16px;align-items:flex-start;">
+        <div style="flex-shrink:0;width:32px;height:32px;background:#1a1a1a;border-radius:50%;display:flex;align-items:center;justify-content:center;">
+          <span style="color:#fff;font-size:13px;font-weight:700;">1</span>
+        </div>
+        <div style="flex:1;padding-top:6px;">
+          <p style="font-size:14px;font-weight:700;color:#1a1a1a;margin-bottom:4px;">Choose Your Magazine</p>
+          <p style="font-size:13px;color:#555;line-height:1.6;">Select the number of pages (8, 12, 16, or 20) and quantity, then tap <strong style="color:#1a1a1a;">Add to Cart</strong> or <strong style="color:#1a1a1a;">Buy it Now</strong>.</p>
+        </div>
+      </div>
+
+      <!-- Step 2 -->
+      <div style="display:flex;gap:14px;margin-bottom:16px;align-items:flex-start;">
+        <div style="flex-shrink:0;width:32px;height:32px;background:#1a1a1a;border-radius:50%;display:flex;align-items:center;justify-content:center;">
+          <span style="color:#fff;font-size:13px;font-weight:700;">2</span>
+        </div>
+        <div style="flex:1;padding-top:6px;">
+          <p style="font-size:14px;font-weight:700;color:#1a1a1a;margin-bottom:4px;">Enter Shipping Details</p>
+          <p style="font-size:13px;color:#555;line-height:1.6;">Fill in your name, phone number, address, and Instagram username on the checkout page.</p>
+        </div>
+      </div>
+
+      <!-- Step 3 -->
+      <div style="display:flex;gap:14px;margin-bottom:16px;align-items:flex-start;">
+        <div style="flex-shrink:0;width:32px;height:32px;background:#1a1a1a;border-radius:50%;display:flex;align-items:center;justify-content:center;">
+          <span style="color:#fff;font-size:13px;font-weight:700;">3</span>
+        </div>
+        <div style="flex:1;padding-top:6px;">
+          <p style="font-size:14px;font-weight:700;color:#1a1a1a;margin-bottom:4px;">Place Order on WhatsApp</p>
+          <p style="font-size:13px;color:#555;line-height:1.6;">Tap <strong style="color:#1a1a1a;">"Place Order via WhatsApp"</strong> — your order and shipping details are sent directly to us. We will confirm your order and share payment details (UPI/COD) on WhatsApp.</p>
+        </div>
+      </div>
+
+      <!-- Step 4 -->
+      <div style="display:flex;gap:14px;margin-bottom:16px;align-items:flex-start;">
+        <div style="flex-shrink:0;width:32px;height:32px;background:#1a1a1a;border-radius:50%;display:flex;align-items:center;justify-content:center;">
+          <span style="color:#fff;font-size:13px;font-weight:700;">4</span>
+        </div>
+        <div style="flex:1;padding-top:6px;">
+          <p style="font-size:14px;font-weight:700;color:#1a1a1a;margin-bottom:4px;">Send Your Photos &amp; Content</p>
+          <p style="font-size:13px;color:#555;line-height:1.6;margin-bottom:8px;">After order confirmation, email everything to <a href="mailto:timelessedition@gmail.com" style="color:#1a1a1a;font-weight:600;text-decoration:underline;">timelessedition@gmail.com</a>:</p>
+          <div style="background:#f7f7f7;border-radius:10px;padding:12px 14px;">
+            <p style="font-size:13px;color:#1a1a1a;line-height:1.8;margin:0;">
+              • Name to print on the magazine cover<br>
+              • Your Instagram username<br>
+              • Text/content you want inside<br>
+              • Your photos <span style="color:#555;">(min 30 – max 60, clear &amp; high quality)</span>
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 5 -->
+      <div style="display:flex;gap:14px;margin-bottom:16px;align-items:flex-start;">
+        <div style="flex-shrink:0;width:32px;height:32px;background:#1a1a1a;border-radius:50%;display:flex;align-items:center;justify-content:center;">
+          <span style="color:#fff;font-size:13px;font-weight:700;">5</span>
+        </div>
+        <div style="flex:1;padding-top:6px;">
+          <p style="font-size:14px;font-weight:700;color:#1a1a1a;margin-bottom:4px;">Preview Before Printing</p>
+          <p style="font-size:13px;color:#555;line-height:1.6;">We'll design your magazine and send you a preview on <strong style="color:#1a1a1a;">Instagram</strong> for your approval before we print anything.</p>
+        </div>
+      </div>
+
+      <!-- Step 6 -->
+      <div style="display:flex;gap:14px;margin-bottom:20px;align-items:flex-start;">
+        <div style="flex-shrink:0;width:32px;height:32px;background:#1a1a1a;border-radius:50%;display:flex;align-items:center;justify-content:center;">
+          <span style="color:#fff;font-size:13px;font-weight:700;">6</span>
+        </div>
+        <div style="flex:1;padding-top:6px;">
+          <p style="font-size:14px;font-weight:700;color:#1a1a1a;margin-bottom:4px;">Printing &amp; Shipping</p>
+          <p style="font-size:13px;color:#555;line-height:1.6;">Once you approve the preview, we print and ship your magazine. Delivery in <strong style="color:#1a1a1a;">5–7 working days</strong>.</p>
+        </div>
+      </div>
+
+      <!-- Important note -->
+      <div style="background:#FFF3CD;border-radius:12px;padding:14px 16px;border-left:4px solid #1a1a1a;">
+        <p style="font-size:13px;font-weight:700;color:#1a1a1a;margin-bottom:4px;">⚠ Important Note</p>
+        <p style="font-size:13px;color:#1a1a1a;line-height:1.6;">Please make sure all images are <strong>clear and high quality</strong> for the best printing results.</p>
+      </div>
+    </div>
+
+    <!-- CROCHET steps (shown only for crochet product) -->
+    <div id="order-steps-crochet" style="margin-bottom:32px;display:none;">
+      <p style="font-size:15px;font-weight:700;margin-bottom:20px;color:#1a1a1a;letter-spacing:0.3px;">Steps To Place Your Order</p>
+
+      <!-- Step 1 -->
+      <div style="display:flex;gap:14px;margin-bottom:16px;align-items:flex-start;">
+        <div style="flex-shrink:0;width:32px;height:32px;background:#1a1a1a;border-radius:50%;display:flex;align-items:center;justify-content:center;">
+          <span style="color:#fff;font-size:13px;font-weight:700;">1</span>
+        </div>
+        <div style="flex:1;padding-top:6px;">
+          <p style="font-size:14px;font-weight:700;color:#1a1a1a;margin-bottom:4px;">Customise Your Bouquet</p>
+          <p style="font-size:13px;color:#555;line-height:1.6;">Add any extra flowers you'd like, then use the <strong style="color:#1a1a1a;">Customisation Note</strong> to tell us your rose color preferences or any special requests.</p>
+        </div>
+      </div>
+
+      <!-- Step 2 -->
+      <div style="display:flex;gap:14px;margin-bottom:16px;align-items:flex-start;">
+        <div style="flex-shrink:0;width:32px;height:32px;background:#1a1a1a;border-radius:50%;display:flex;align-items:center;justify-content:center;">
+          <span style="color:#fff;font-size:13px;font-weight:700;">2</span>
+        </div>
+        <div style="flex:1;padding-top:6px;">
+          <p style="font-size:14px;font-weight:700;color:#1a1a1a;margin-bottom:4px;">Add to Cart &amp; Checkout</p>
+          <p style="font-size:13px;color:#555;line-height:1.6;">Tap <strong style="color:#1a1a1a;">Add to Cart</strong> or <strong style="color:#1a1a1a;">Buy it Now</strong>, then fill in your shipping details on the checkout page.</p>
+        </div>
+      </div>
+
+      <!-- Step 3 -->
+      <div style="display:flex;gap:14px;margin-bottom:16px;align-items:flex-start;">
+        <div style="flex-shrink:0;width:32px;height:32px;background:#1a1a1a;border-radius:50%;display:flex;align-items:center;justify-content:center;">
+          <span style="color:#fff;font-size:13px;font-weight:700;">3</span>
+        </div>
+        <div style="flex:1;padding-top:6px;">
+          <p style="font-size:14px;font-weight:700;color:#1a1a1a;margin-bottom:4px;">Place Order on WhatsApp</p>
+          <p style="font-size:13px;color:#555;line-height:1.6;">Tap <strong style="color:#1a1a1a;">"Place Order via WhatsApp"</strong> — your bouquet details, customisation note, and shipping info are sent directly to us. We'll confirm your order and share payment details (UPI/COD) on WhatsApp.</p>
+        </div>
+      </div>
+
+      <!-- Step 4 -->
+      <div style="display:flex;gap:14px;margin-bottom:20px;align-items:flex-start;">
+        <div style="flex-shrink:0;width:32px;height:32px;background:#1a1a1a;border-radius:50%;display:flex;align-items:center;justify-content:center;">
+          <span style="color:#fff;font-size:13px;font-weight:700;">4</span>
+        </div>
+        <div style="flex:1;padding-top:6px;">
+          <p style="font-size:14px;font-weight:700;color:#1a1a1a;margin-bottom:4px;">Handcrafted &amp; Shipped</p>
+          <p style="font-size:13px;color:#555;line-height:1.6;">We handcraft your bouquet to order and ship it to you. Delivery in <strong style="color:#1a1a1a;">5–7 working days</strong>.</p>
+        </div>
+      </div>
+
+      <!-- Important note -->
+      <div style="background:#fdf6f0;border-radius:12px;padding:14px 16px;border-left:4px solid #f0a060;">
+        <p style="font-size:13px;font-weight:700;color:#1a1a1a;margin-bottom:4px;">🌸 Good to Know</p>
+        <p style="font-size:13px;color:#555;line-height:1.6;">Each bouquet is handmade — slight variations in petal shape and arrangement are a natural part of the craft and make your piece truly one of a kind.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── CART PAGE ── -->
+<div id="cart-page">
+  <div class="sticky-back">
+    <button class="back-btn" onclick="closeCart()">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+      <span style="font-size:13px;font-weight:600;">Back</span>
+    </button>
+    <span style="font-size:17px;font-weight:700;">Your Cart</span>
+  </div>
+
+  <div class="page" style="padding-top:20px;padding-bottom:120px;">
+    <div id="cart-items-list"></div>
+    <div id="cart-empty" style="display:none;text-align:center;padding:60px 0;color:#999;font-size:15px;">Your cart is empty</div>
+
+    <div id="cart-summary" style="margin-top:20px;padding-top:16px;border-top:2px solid #1a1a1a;">
+      <div style="display:flex;justify-content:space-between;font-size:16px;font-weight:700;margin-bottom:20px;">
+        <span>Total</span>
+        <span id="cart-total">Rs. 0</span>
+      </div>
+      <button class="primary-btn" onclick="openCheckout()">Proceed to Checkout</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── CHECKOUT PAGE ── -->
+<div id="checkout-page">
+  <div class="sticky-back">
+    <button class="back-btn" onclick="closeCheckout()">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+      <span style="font-size:13px;font-weight:600;">Back</span>
+    </button>
+    <span style="font-size:17px;font-weight:700;">Checkout</span>
+  </div>
+
+  <div class="page" style="padding-top:24px;padding-bottom:40px;">
+
+    <!-- Order summary -->
+    <div style="background:#f8f8f8;border-radius:14px;padding:16px;margin-bottom:16px;">
+      <p style="font-size:13px;font-weight:700;color:#555;margin-bottom:12px;text-transform:uppercase;letter-spacing:0.5px;">Order Summary</p>
+      <div id="checkout-summary-list"></div>
+      <div id="discount-row" style="display:none;justify-content:space-between;font-size:14px;color:#2d7a3a;margin-bottom:8px;">
+        <span>Discount (5%)</span>
+        <span id="discount-amount">− Rs. 0</span>
+      </div>
+      <div id="delivery-row" style="display:none;justify-content:space-between;font-size:14px;color:#1a1a1a;margin-bottom:8px;">
+        <span>Delivery Charge</span>
+        <span>Rs. 100</span>
+      </div>
+      <div id="free-delivery-row" style="display:none;justify-content:space-between;font-size:14px;color:#2d7a3a;margin-bottom:8px;">
+        <span>Delivery</span>
+        <span>FREE 🎉</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;font-size:15px;font-weight:700;border-top:1px solid #e0e0e0;padding-top:12px;margin-top:8px;">
+        <span>Total</span>
+        <span id="checkout-total">Rs. 0</span>
+      </div>
+    </div>
+
+    <!-- Coupon Code -->
+    <div style="margin-bottom:24px;">
+      <div style="display:flex;gap:8px;">
+        <input type="text" id="coupon-input" placeholder="Enter coupon code" style="flex:1;border:1.5px solid #e0e0e0;border-radius:12px;padding:12px 14px;font-size:15px;color:#1a1a1a;background:#fff;outline:none;font-family:inherit;text-transform:uppercase;">
+        <button onclick="applyCoupon()" style="background:#1a1a1a;color:#fff;border:none;border-radius:12px;padding:12px 18px;font-size:14px;font-weight:700;cursor:pointer;white-space:nowrap;">Apply</button>
+      </div>
+      <p id="coupon-msg" style="font-size:13px;margin-top:8px;display:none;"></p>
+    </div>
+
+    <!-- Shipping Details -->
+    <p style="font-size:16px;font-weight:700;margin-bottom:16px;">Shipping Details</p>
+
+    <div class="form-group">
+      <label>Full Name *</label>
+      <input type="text" id="f-name" placeholder="Your full name">
+    </div>
+    <div class="form-group">
+      <label>Phone Number *</label>
+      <input type="tel" id="f-phone" placeholder="+91 XXXXX XXXXX">
+    </div>
+    <div class="form-group">
+      <label>Address *</label>
+      <textarea id="f-address" placeholder="House no, Street, Area"></textarea>
+    </div>
+    <div class="form-group">
+      <label>City *</label>
+      <input type="text" id="f-city" placeholder="City">
+    </div>
+    <div class="form-group">
+      <label>State *</label>
+      <input type="text" id="f-state" placeholder="State">
+    </div>
+    <div class="form-group">
+      <label>Pincode *</label>
+      <input type="tel" id="f-pin" placeholder="Pincode" maxlength="6">
+    </div>
+    <div class="form-group">
+      <label>Instagram Username</label>
+      <input type="text" id="f-insta" placeholder="@yourusername">
+    </div>
+    <div class="form-group">
+      <label>Note (optional)</label>
+      <textarea id="f-note" placeholder="Any special instructions..."></textarea>
+    </div>
+
+    <button class="primary-btn" onclick="placeOrder()">
+      <span style="display:flex;align-items:center;justify-content:center;gap:8px;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg>
+        Place Order via WhatsApp
+      </span>
+    </button>
+  </div>
+</div>
+
+<script>
+  /* ══════════════════════════════════
+     FLIP / IFRAME LINKS
+  ══════════════════════════════════ */
+  const productImages = {
+    bestfriend:  'https://www.image2url.com/r2/default/images/1779643003649-cef0e5f1-e7e2-4ef5-b581-dff39a39ce4c.jpg',
+    couple:      'https://www.image2url.com/r2/default/images/1779643526885-b4aef378-c598-4c75-a6dd-6c3572324c64.jpg',
+    anniversary: 'https://www.image2url.com/r2/default/images/1779643879742-9b95ffa0-2297-46c6-ae02-0511280065ff.jpg',
+    birthday:    'https://www.image2url.com/r2/default/images/1779681468890-758dea39-e373-4f1b-977c-fa09bf4a9f97.png',
+    vogue:       'https://www.image2url.com/r2/default/images/1779643852439-639e5e9b-08bb-409c-bf8d-e18a4a00d7c5.jpg',
+    crochet:     'https://www.image2url.com/r2/default/images/1779681789869-84eec21f-be38-4ddd-b7c5-180e2818ffbb.png',
+  };
+
+  function renderThumbs(key) {
+    const mainEl = document.getElementById('thumb-main');
+    const iframeLinks = {
+      vogue:       'https://online.fliphtml5.com/Timelessedition/Hritik_20260521_203928_0000-5osz/',
+      couple:      'https://online.fliphtml5.com/Timelesseditions/1000049827/',
+      anniversary: 'https://online.fliphtml5.com/Timelesseditions/1000049835/',
+      bestfriend:  'https://online.fliphtml5.com/Timelesseditions/1000050323/',
+    };
+    const iframeLink = iframeLinks[key];
+    const imgSrc = productImages[key] || (key + '.jpg');
+    mainEl.innerHTML = `<img src="${imgSrc}" alt="${key}" style="width:100%;height:100%;object-fit:cover;display:block;">`;
+    if (iframeLink) {
+      mainEl.style.cursor = 'pointer';
+      mainEl.onclick = function() {
+        mainEl.innerHTML = `<div style="position:relative;width:100%;height:100%;"><iframe style="position:absolute;border:none;width:100%;height:100%;left:0;top:0;" src="${iframeLink}" seamless scrolling="no" frameborder="0" allowtransparency="true" allowfullscreen="true"></iframe></div>`;
+        mainEl.onclick = null; mainEl.style.cursor = 'default';
+        history.pushState({ page: 'flipbook', key: currentKey }, '', '#flipbook');
+      };
+      const playBtn = document.createElement('div');
+      playBtn.className = 'thumb-play-btn';
+      playBtn.innerHTML = `<div class="thumb-play-circle"><svg width="20" height="20" viewBox="0 0 24 24" fill="rgba(255,255,255,0.95)"><polygon points="6,3 20,12 6,21"/></svg></div>`;
+      mainEl.appendChild(playBtn);
+    } else {
+      mainEl.style.cursor = 'default'; mainEl.onclick = null;
+    }
+  }
+
+  /* ══════════════════════════════════
+     PRODUCTS & STATE
+  ══════════════════════════════════ */
+  const products = {
+    anniversary: { title: 'Custom Anniversary Template' },
+    bestfriend:  { title: 'Custom Best Friend Template'  },
+    birthday:    { title: 'Custom Birthday Template'     },
+    couple:      { title: 'Custom Couple Magazine'       },
+    vogue:       { title: 'Custom Vogue Collection'      },
+    crochet:     { title: 'Sunflower Serenity'             },
+  };
+
+  const pagePrices = { 8: 399, 12: 599, 16: 799, 20: 999 };
+  const productPriceOverride = {
+    crochet: { 8: 699, 12: 899, 16: 1099, 20: 1299 }
+  };
+  const productOriginalPrice = {
+    crochet: { 8: 1000, 12: 1300, 16: 1600, 20: 1900 }
+  };
+  let currentQty = 1, selectedPages = 8, currentKey = null, currentCat = null;
+
+  /* ══════════════════════════════════
+     CART
+  ══════════════════════════════════ */
+  let cart = []; // [{ key, title, img, pages, price, qty }]
+
+  function updateCartBadge() {
+    const total = cart.reduce((s, i) => s + i.qty, 0);
+    const display = total > 0 ? 'flex' : 'none';
+    ['cart-badge','cart-badge-product'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) { el.textContent = total; el.style.display = display; }
+    });
+  }
+
+  function addToCart(btn) {
+    const title = products[currentKey].title;
+    const price = (productPriceOverride[currentKey] && productPriceOverride[currentKey][selectedPages]) ? productPriceOverride[currentKey][selectedPages] : pagePrices[selectedPages];
+    const existing = cart.find(i => i.key === currentKey && i.pages === selectedPages);
+    if (existing) {
+      existing.qty += currentQty;
+    } else {
+      cart.push({ key: currentKey, title, img: productImages[currentKey] || (currentKey + '.jpg'), pages: selectedPages, price, qty: currentQty });
+    }
+    updateCartBadge();
+    // Flash feedback
+    const orig = btn.innerHTML;
+    btn.innerHTML = '✓ Added!';
+    btn.style.background = '#2d7a3a';
+    setTimeout(() => { btn.innerHTML = orig; btn.style.background = '#1a1a1a'; }, 1200);
+  }
+
+  function buyNow() {
+    addToCartSilent();
+    renderCheckoutSummary();
+    showOnly('checkout-page');
+    document.getElementById('checkout-page').scrollTop = 0;
+    history.pushState({ page: 'checkout' }, '', '#checkout');
+  }
+
+  function addToCartSilent() {
+    const title = products[currentKey].title;
+    const price = (productPriceOverride[currentKey] && productPriceOverride[currentKey][selectedPages]) ? productPriceOverride[currentKey][selectedPages] : pagePrices[selectedPages];
+    const existing = cart.find(i => i.key === currentKey && i.pages === selectedPages);
+    if (existing) { existing.qty += currentQty; }
+    else { cart.push({ key: currentKey, title, img: productImages[currentKey] || (currentKey + '.jpg'), pages: selectedPages, price, qty: currentQty }); }
+    updateCartBadge();
+  }
+
+  function removeFromCart(idx) {
+    cart.splice(idx, 1);
+    updateCartBadge();
+    renderCartPage();
+  }
+
+  function changeCartQty(idx, delta) {
+    cart[idx].qty = Math.max(1, cart[idx].qty + delta);
+    updateCartBadge();
+    renderCartPage();
+  }
+
+  function renderCartPage() {
+    const list = document.getElementById('cart-items-list');
+    const empty = document.getElementById('cart-empty');
+    const summary = document.getElementById('cart-summary');
+
+    if (cart.length === 0) {
+      list.innerHTML = '';
+      empty.style.display = 'block';
+      summary.style.display = 'none';
+      return;
+    }
+    empty.style.display = 'none';
+    summary.style.display = 'block';
+
+    list.innerHTML = cart.map((item, idx) => `
+      <div class="cart-item">
+        <img class="cart-item-img" src="${item.img}" alt="${item.title}" onerror="this.style.background='#eee';this.src=''">
+        <div class="cart-item-info">
+          <div class="cart-item-title">${item.title}</div>
+          <div class="cart-item-sub">${item.pages ? item.pages + ' Pages' : (item.desc || '')}</div>
+          <div class="qty-ctrl">
+            <button onclick="changeCartQty(${idx},-1)">−</button>
+            <span>${item.qty}</span>
+            <button onclick="changeCartQty(${idx},1)">+</button>
+          </div>
+          <div class="cart-item-price" style="margin-top:8px;">Rs. ${item.price * item.qty}</div>
+        </div>
+        <button class="cart-item-remove" onclick="removeFromCart(${idx})">&#x2715;</button>
+      </div>
+    `).join('');
+
+    const total = cart.reduce((s, i) => s + i.price * i.qty, 0);
+    document.getElementById('cart-total').textContent = 'Rs. ' + total;
+  }
+
+  /* ══════════════════════════════════
+     CHECKOUT & WHATSAPP
+  ══════════════════════════════════ */
+  let couponApplied = false;
+  const VALID_COUPONS = { 'NEW5': 5 };
+
+  function applyCoupon() {
+    const input = document.getElementById('coupon-input').value.trim().toUpperCase();
+    const msg = document.getElementById('coupon-msg');
+    msg.style.display = 'block';
+    if (VALID_COUPONS[input] !== undefined) {
+      couponApplied = input;
+      msg.textContent = '\uD83C\uDF89 Coupon applied! You got ' + VALID_COUPONS[input] + '% off.';
+      msg.style.color = '#2d7a3a';
+      document.getElementById('coupon-input').style.borderColor = '#2d7a3a';
+    } else {
+      couponApplied = false;
+      msg.textContent = '\u2715 Invalid coupon code. Please try again.';
+      msg.style.color = '#c0392b';
+      document.getElementById('coupon-input').style.borderColor = '#c0392b';
+    }
+    renderCheckoutSummary();
+  }
+
+  function renderCheckoutSummary() {
+    const list = document.getElementById('checkout-summary-list');
+    list.innerHTML = cart.map(item => `
+      <div style="display:flex;justify-content:space-between;font-size:14px;margin-bottom:8px;">
+        <span>${item.title} (${item.pages ? item.pages + 'pg' : 'Custom'} \u00d7 ${item.qty})</span>
+        <span>Rs. ${item.price * item.qty}</span>
+      </div>
+    `).join('');
+    const subtotal = cart.reduce((s, i) => s + i.price * i.qty, 0);
+    const discountRow = document.getElementById('discount-row');
+    const discountEl = document.getElementById('discount-amount');
+    let discountedTotal = subtotal;
+    if (couponApplied && VALID_COUPONS[couponApplied]) {
+      const pct = VALID_COUPONS[couponApplied];
+      const disc = Math.round(subtotal * pct / 100);
+      discountedTotal = subtotal - disc;
+      discountEl.textContent = '\u2212 Rs. ' + disc;
+      discountRow.style.display = 'flex';
+    } else {
+      discountRow.style.display = 'none';
+    }
+    const deliveryRow = document.getElementById('delivery-row');
+    const freeDeliveryRow = document.getElementById('free-delivery-row');
+    let delivery = 0;
+    if (discountedTotal >= 700) {
+      delivery = 0;
+      deliveryRow.style.display = 'none';
+      freeDeliveryRow.style.display = 'flex';
+    } else {
+      delivery = 100;
+      deliveryRow.style.display = 'flex';
+      freeDeliveryRow.style.display = 'none';
+    }
+    const total = discountedTotal + delivery;
+    document.getElementById('checkout-total').textContent = 'Rs. ' + total;
+  }
+
+  function placeOrder() {
+    const name    = document.getElementById('f-name').value.trim();
+    const phone   = document.getElementById('f-phone').value.trim();
+    const address = document.getElementById('f-address').value.trim();
+    const city    = document.getElementById('f-city').value.trim();
+    const state   = document.getElementById('f-state').value.trim();
+    const pin     = document.getElementById('f-pin').value.trim();
+    const insta   = document.getElementById('f-insta').value.trim();
+    const note    = document.getElementById('f-note').value.trim();
+
+    if (!name || !phone || !address || !city || !state || !pin) {
+      alert('Please fill in all required fields.');
+      return;
+    }
+
+    const subtotal = cart.reduce((s, i) => s + i.price * i.qty, 0);
+    let discount = 0;
+    if (couponApplied && VALID_COUPONS[couponApplied]) {
+      discount = Math.round(subtotal * VALID_COUPONS[couponApplied] / 100);
+    }
+    const discountedTotal = subtotal - discount;
+    const delivery = discountedTotal >= 700 ? 0 : 100;
+    const total = discountedTotal + delivery;
+    const itemLines = cart.map(i => {
+      if (i.key === 'crochet') return `• ${i.title} | ${i.desc} × ${i.qty} = Rs. ${i.price * i.qty}`;
+      return `• ${i.title} | ${i.pages} pages × ${i.qty} = Rs. ${i.price * i.qty}`;
+    }).join('\n');
+
+    let msg = `Hi! I want to place an order on Timeless Edition.\n\n`;
+    msg += `*Order Details:*\n${itemLines}\n\n`;
+    if (discount > 0) msg += `*Coupon (${couponApplied}): - Rs. ${discount}*\n`;
+    msg += `*Delivery: ${delivery === 0 ? 'FREE' : 'Rs. 100'}*\n`;
+    msg += `*Total: Rs. ${total}*\n\n`;
+    msg += `*Shipping Details:*\n`;
+    msg += `Name: ${name}\n`;
+    msg += `Phone: ${phone}\n`;
+    msg += `Address: ${address}, ${city}, ${state} - ${pin}\n`;
+    if (insta) msg += `Instagram: ${insta}\n`;
+    if (note)  msg += `Note: ${note}\n`;
+
+    window.location.href = 'https://wa.me/918235755702?text=' + encodeURIComponent(msg);
+  }
+
+  /* ══════════════════════════════════
+     PAGE NAVIGATION
+  ══════════════════════════════════ */
+  const allPages = ['main-page','category-page','product-page','cart-page','checkout-page'];
+  const fixedPages = ['product-page','cart-page','checkout-page'];
+
+  function showOnly(id) {
+    requestAnimationFrame(() => {
+      allPages.forEach(p => document.getElementById(p).style.display = p === id ? 'block' : 'none');
+      // Lock body scroll when a fixed overlay page is shown (prevents iOS background scroll bleed)
+      if (fixedPages.includes(id)) {
+        document.body.style.overflow = 'hidden';
+        document.body.style.position = 'fixed';
+        document.body.style.width = '100%';
+      } else {
+        document.body.style.overflow = '';
+        document.body.style.position = '';
+        document.body.style.width = '';
+      }
+    });
+  }
+
+  function openPage(key) {
+    currentKey = key; currentQty = 1; selectedPages = 8;
+    document.getElementById('popup-title').textContent = products[key].title;
+    renderThumbs(key);
+
+    const isCrochet = key === 'crochet';
+    document.getElementById('magazine-options').style.display      = isCrochet ? 'none'  : 'block';
+    document.getElementById('crochet-options').style.display       = isCrochet ? 'block' : 'none';
+    document.getElementById('order-steps-magazine').style.display  = isCrochet ? 'none'  : 'block';
+    document.getElementById('order-steps-crochet').style.display   = isCrochet ? 'block' : 'none';
+
+    if (isCrochet) {
+      document.getElementById('price-display').textContent = 'Rs. 699';
+      initCrochetUI();
+    } else {
+      document.getElementById('qty-display').textContent = '1';
+      const startPrice = (productPriceOverride[key] && productPriceOverride[key][8]) ? productPriceOverride[key][8] : pagePrices[8];
+      document.getElementById('price-display').textContent = 'Rs. ' + startPrice + '.00';
+      document.querySelectorAll('.page-btn').forEach(b => b.classList.remove('selected'));
+      document.querySelectorAll('.page-btn')[0].classList.add('selected');
+    }
+
+    showOnly('product-page');
+    document.getElementById('product-page').scrollTop = 0;
+
+    // showOnly uses rAF internally; chain another rAF so buttons are visible before we style them
+    if (isCrochet) requestAnimationFrame(() => requestAnimationFrame(() => selectExtraRoseColor('White')));
+
+    history.pushState({ page: 'product', key }, '', '#' + key);
+  }
+
+  function handleProductBack() {
+    const mainEl = document.getElementById('thumb-main');
+    if (mainEl && mainEl.querySelector('iframe')) {
+      // Flipbook is open — just restore the thumbnail, stay on product page
+      renderThumbs(currentKey);
+      return;
+    }
+    closePage();
+  }
+
+  function closePage() {
+    const mainEl = document.getElementById('thumb-main');
+    if (mainEl) mainEl.innerHTML = '';
+    if (currentCat) { showOnly('category-page'); } else { showOnly('main-page'); }
+    if (history.state && history.state.page === 'product') {
+      history.back();
+    } else {
+      history.replaceState({ page: 'main' }, '', window.location.pathname);
+    }
+  }
+
+  function openCart() {
+    renderCartPage();
+    showOnly('cart-page');
+    document.getElementById('cart-page').scrollTop = 0;
+    history.pushState({ page: 'cart' }, '', '#cart');
+  }
+
+  function closeCart() {
+    const catPage = document.getElementById('category-page');
+    if (currentCat && catPage) { showOnly('category-page'); }
+    else { showOnly('main-page'); }
+    history.replaceState({ page: 'main' }, '', window.location.pathname);
+  }
+
+  function openCheckout() {
+    if (cart.length === 0) return;
+    renderCheckoutSummary();
+    showOnly('checkout-page');
+    document.getElementById('checkout-page').scrollTop = 0;
+    history.pushState({ page: 'checkout' }, '', '#checkout');
+  }
+
+  function closeCheckout() {
+    openCart();
+  }
+
+  function goHome() {
+    const mainEl = document.getElementById('thumb-main');
+    if (mainEl) mainEl.innerHTML = '';
+    currentKey = null; currentCat = null;
+    showOnly('main-page');
+    history.replaceState({ page: 'main' }, '', window.location.pathname);
+  }
+
+  /* ══════════════════════════════════
+     CATEGORIES
+  ══════════════════════════════════ */
+  const categories = {
+    magazines: {
+      title: 'Magazines',
+      items: [
+        { key: 'anniversary', label: 'Custom Anniversary<br>Template', img: 'anniversary.jpg' },
+        { key: 'bestfriend',  label: 'Custom Best Friend<br>Template',  img: 'bestfriend.jpg'  },
+        { key: 'birthday',    label: 'Custom Birthday<br>Template',    img: 'https://www.image2url.com/r2/default/images/1779681468890-758dea39-e373-4f1b-977c-fa09bf4a9f97.png'    },
+        { key: 'couple',      label: 'Custom Couple<br>Magazine',      img: 'couple.jpg'      },
+        { key: 'vogue',       label: 'Custom Vogue<br>Collection',     img: 'vogue.jpg'       },
+      ]
+    },
+    crochet: { title: 'Crochet', items: [
+      { key: 'crochet', label: 'Sunflower<br>Serenity', img: 'https://www.image2url.com/r2/default/images/1779681789869-84eec21f-be38-4ddd-b7c5-180e2818ffbb.png' }
+    ]}
+  };
+
+  function openCategory(cat) {
+    currentCat = cat;
+    const data = categories[cat];
+    document.getElementById('category-title').textContent = data.title;
+    const grid = document.getElementById('category-grid');
+    if (data.items.length === 0) {
+      grid.innerHTML = '<p style="color:#888;font-size:15px;padding:20px 0;">Coming soon!</p>';
+    } else {
+      grid.innerHTML = data.items.map(item => {
+        const basePrice = (productPriceOverride[item.key] && productPriceOverride[item.key][8]) ? productPriceOverride[item.key][8] : 399;
+        const origPrice = (productOriginalPrice[item.key] && productOriginalPrice[item.key][8]) ? productOriginalPrice[item.key][8] : null;
+        const priceHtml = origPrice
+          ? `<div class="product-price" style="display:flex;align-items:center;gap:6px;"><span>Rs. ${basePrice}.00</span><span style="text-decoration:line-through;color:#aaa;font-size:12px;">Rs. ${origPrice}.00</span></div>`
+          : `<div class="product-price">Rs. ${basePrice}.00</div>`;
+        return `
+        <a class="product-card" href="#${item.key}" onclick="event.preventDefault();openPage('${item.key}')">
+          <div class="product-image-wrap">
+            <img src="${item.img}" alt="${item.key}" style="width:100%;height:100%;object-fit:cover;display:block;">
+          </div>
+          <div class="product-label">${item.label}</div>
+          ${priceHtml}
+        </a>`;
+      }).join('');
+    }
+    showOnly('category-page');
+    document.getElementById('category-page').scrollTop = 0;
+    history.pushState({ page: 'category', cat }, '', '#' + cat);
+  }
+
+  function closeCategory() {
+    currentCat = null;
+    showOnly('main-page');
+    history.replaceState({ page: 'main' }, '', window.location.pathname);
+  }
+
+  /* ══════════════════════════════════
+     PAGE / QTY SELECTORS
+  ══════════════════════════════════ */
+  function selectPages(btn, pages) {
+    selectedPages = pages;
+    document.querySelectorAll('.page-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+    const price = (productPriceOverride[currentKey] && productPriceOverride[currentKey][pages]) ? productPriceOverride[currentKey][pages] : pagePrices[pages];
+    document.getElementById('price-display').textContent = 'Rs. ' + price + '.00';
+  }
+
+  function changeQty(delta) {
+    currentQty = Math.max(1, currentQty + delta);
+    document.getElementById('qty-display').textContent = currentQty;
+  }
+
+  /* ══════════════════════════════════
+     BACK BUTTON
+  ══════════════════════════════════ */
+  window.addEventListener('popstate', function(e) {
+    const state = e.state || {};
+    const pp = document.getElementById('product-page').style.display === 'block';
+    const cp = document.getElementById('category-page').style.display === 'block';
+    const ca = document.getElementById('cart-page').style.display === 'block';
+    const co = document.getElementById('checkout-page').style.display === 'block';
+
+    if (co) { closeCheckout(); }
+    else if (ca) { closeCart(); }
+    else if (pp) { closePage(); }
+    else if (cp) { closeCategory(); }
+  });
+
+  window.addEventListener('load', function() {
+    history.replaceState({ page: 'main' }, '', window.location.pathname);
+  });
+
+  /* ══════════════════════════════════
+     CROCHET CUSTOMISER
+  ══════════════════════════════════ */
+  let crochetState = { extraSunflowers: 0, extraWhiteRoses: 0, extraPinkRoses: 0 };
+
+  function initCrochetUI() {
+    crochetState = { extraSunflowers: 0, extraWhiteRoses: 0, extraPinkRoses: 0 };
+    document.getElementById('extra-sunflower-count').textContent = '0';
+    document.getElementById('extra-rose-white-count').textContent = '0';
+    document.getElementById('extra-rose-pink-count').textContent = '0';
+    document.getElementById('crochet-note').value = '';
+    updateCrochetTotal();
+  }
+
+  function changeCrochet(type, delta) {
+    if (type === 'sunflower') {
+      crochetState.extraSunflowers = Math.max(0, crochetState.extraSunflowers + delta);
+      document.getElementById('extra-sunflower-count').textContent = crochetState.extraSunflowers;
+    } else if (type === 'roseWhite') {
+      crochetState.extraWhiteRoses = Math.max(0, crochetState.extraWhiteRoses + delta);
+      document.getElementById('extra-rose-white-count').textContent = crochetState.extraWhiteRoses;
+    } else if (type === 'rosePink') {
+      crochetState.extraPinkRoses = Math.max(0, crochetState.extraPinkRoses + delta);
+      document.getElementById('extra-rose-pink-count').textContent = crochetState.extraPinkRoses;
+    }
+    updateCrochetTotal();
+  }
+
+  function updateCrochetTotal() {
+    const totalRoses = crochetState.extraWhiteRoses + crochetState.extraPinkRoses;
+    const total = 699 + (crochetState.extraSunflowers * 200) + (totalRoses * 150);
+    document.getElementById('crochet-total-display').textContent = 'Rs. ' + total;
+    return total;
+  }
+
+  function crochetCartItem() {
+    const snap = Object.assign({}, crochetState);
+    const totalRoses = snap.extraWhiteRoses + snap.extraPinkRoses;
+    const total = 699 + (snap.extraSunflowers * 200) + (totalRoses * 150);
+    const note = (document.getElementById('crochet-note').value || '').trim();
+    let desc = `2 Sunflowers, 2 Roses (White & Pink)`;
+    if (snap.extraSunflowers > 0) desc += `, +${snap.extraSunflowers} extra Sunflower(s)`;
+    if (snap.extraWhiteRoses > 0) desc += `, +${snap.extraWhiteRoses} extra White Rose(s)`;
+    if (snap.extraPinkRoses > 0) desc += `, +${snap.extraPinkRoses} extra Pink Rose(s)`;
+    if (note) desc += ` | Note: ${note}`;
+    return { key: 'crochet', title: 'Sunflower Serenity', img: productImages['crochet'], pages: null, price: total, qty: 1, desc };
+  }
+
+  function addCrochetToCart() {
+    const item = crochetCartItem();
+    cart.push(item);
+    updateCartBadge();
+    const btn = event.currentTarget;
+    const orig = btn.innerHTML;
+    btn.innerHTML = '✓ Added!';
+    btn.style.background = '#2d7a3a';
+    setTimeout(() => { btn.innerHTML = orig; btn.style.background = '#1a1a1a'; }, 1200);
+  }
+
+  function buyCrochetNow() {
+    const item = crochetCartItem();
+    cart.push(item);
+    updateCartBadge();
+    renderCheckoutSummary();
+    showOnly('checkout-page');
+    document.getElementById('checkout-page').scrollTop = 0;
+    history.pushState({ page: 'checkout' }, '', '#checkout');
+  }
+
+  /* ══════════════════════════════════
+     PINCODE AUTO-DETECT
+  ══════════════════════════════════ */
+
+
+  /* ══════════════════════════════════
+     MENU
+  ══════════════════════════════════ */
+  function openMenu() {
+    document.getElementById('side-menu').style.display = 'block';
+    document.getElementById('menu-overlay').style.display = 'block';
+    document.body.style.overflow = 'hidden';
+    document.body.style.position = 'fixed';
+    document.body.style.width = '100%';
+  }
+  function closeMenu() {
+    document.getElementById('side-menu').style.display = 'none';
+    document.getElementById('menu-overlay').style.display = 'none';
+    // Only unlock body if no fixed overlay page is currently shown
+    const anyFixed = fixedPages.some(p => document.getElementById(p).style.display === 'block');
+    if (!anyFixed) {
+      document.body.style.overflow = '';
+      document.body.style.position = '';
+      document.body.style.width = '';
+    }
+  }
+</script>
+
+</body>
+</html>
